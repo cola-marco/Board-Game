@@ -1,0 +1,57 @@
+# LaTeX build files
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.brf
+*.idx
+*.ilg
+*.ind
+*.lof
+*.log
+*.lot
+*.out
+*.run.xml
+*.toc
+*.acn
+*.acr
+*.alg
+*.glg
+*.glo
+*.gls
+*.ist
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.nav
+*.snm
+*.vrb
+
+# Latexmk
+latexmkrc
+*.dvi
+
+# Bibliography
+*.bib.bak
+
+# Temporary files
+*~
+*.swp
+*.swo
+
+# Output files
+#*.pdf
+*.ps
+
+# Build directories
+/build/
+/out/
+/dist/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor folders
+.vscode/
+.idea/

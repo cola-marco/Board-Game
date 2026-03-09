@@ -1,0 +1,87 @@
+\documentclass[12pt]{article}
+
+\usepackage[a4paper, margin=2.5cm]{geometry}
+\usepackage{setspace}
+\usepackage{hyperref}
+
+\title{\textbf{Project Report}\\
+\vspace{0.3cm}
+02180 - Introduction to Artificial Intelligence\\
+Technical University of Denmark}
+
+\date{March 2026}
+
+\begin{document}
+
+\maketitle
+\section*{Group number: 24}
+\section*{Group Composition}
+\begin{itemize}
+    \item \textbf{Marco Cola} (Student ID: s260201)
+    \item \textbf{Michele Berlato} (Student ID: s250437)
+    \item \textbf{Alexandros Kouros} (Student ID: s260329)
+    \item \textbf{Mattia Russo} (Student ID: s257370)
+\end{itemize}
+
+\vspace{0.3cm}
+\newpage
+
+\section{Game rules}
+\textit{Game rules, in particular if you choose a game not on the list above or if you make
+simplifications to the game. Make this part as short as possible. If you have simplified
+the rules, explain why and explain what it would take to make AI for the full game.}
+
+\section{Game Type}
+\textit{What kind of game is it? Relevant questions are e.g.: Single- or multi-player? Competitive
+or cooperative? Zero-sum? Is it turn-based, concurrent or real-time? Perfect or imperfect
+information (full or partial observability)? Deterministic or stochastic? And what does
+this imply for the kind of algorithms that apply to the game?}
+
+\section{Size space}
+\textit{What, approximately, is the size of the state space of the game, that is, the number of
+reachable states from an initial state of the game? Finding the precise number can often
+be very difficult, but here it is enough to estimate whether it is e.g. in the ballpark of $10^5$,
+$10^{10}$, $10^{15}$, $10^{20}$... You can e.g. try to give an upper bound on the size
+of the state space (or both a lower and upper bound). What does this imply for the kind
+of algorithms that apply to the game?}
+
+\section{Elements of the game}
+\textit{Describe the following elements of your game (or the relevant subset): $s_0$ (initial state),
+Player(s), Action(s), Result(s, a), Terminal-Test(s), Utility(s, p). You don't
+necessarily have to specify these formally, but try to describe them as clearly and precisely
+as possible. If your chosen game cannot be expressed fully in terms of these functions,
+explain why, and describe the additional components as precisely as possible.}
+
+\section{AI states and moves representation}
+\textit{How are states and moves represented in the computer? To make AI for this game, was
+it enough to represent a game state as the position of the pieces or the distribution of the
+cards? Or was it e.g. necessary to represent game states as belief states, and why? Don’t
+give too implementation-specific answers, but answer in overall terms of algorithms and
+data structures.}
+
+\section{Methods \& Algorithms}
+\textit{Which of the methods and algorithms considered in the course could potentially be used
+to construct AI for your game, and which have you chosen? If you use one of the standard
+algorithms without modification, you don’t have to describe it, but can just refer to the
+textbook (or other sources). However, try to give a small concrete example of how the
+algorithm works in your game, e.g. by illustrating a few steps of the search graph/tree
+being built (you can do this in a smaller or simplified version of the game, if you prefer).
+Also, argue of the appropriateness of your chosen algorithm for the chosen game.}
+
+\section{Heuristics and Evaluation functions}
+\textit{If you use heuristics or evaluation functions, make sure to explain how these have been
+designed. Use mathematical notation rather than implementation-specific notation.}
+
+\section{Implemented AI's parameters}
+\textit{Are there any parameters that can be adjusted in your implemented AI? Did you try out
+several different algorithms, search depths, heuristics or evaluation functions? If so, it is
+a very good idea to include benchmarks (test results) comparing the different versions. It
+is also interesting to compare the strength of the AIs to human players (yourselves).}
+
+\section{Future work}
+\textit{Comments on future work: How could your solution be improved? Could it be optimised
+using the same algorithms and data structures that you are currently using? Or would
+significant improvements of the AI require different methods, and if so, which could be
+considered?}
+
+\end{document}
