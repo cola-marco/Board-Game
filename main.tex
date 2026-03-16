@@ -1,93 +1,237 @@
-\documentclass[12pt]{article}
+\documentclass[a4paper,11pt]{article}
 
-\usepackage[a4paper, margin=2.5cm]{geometry}
-\usepackage{setspace}
-\usepackage{hyperref}
 
-\title{\textbf{Project Report}\\
-\vspace{0.3cm}
-02180 - Introduction to Artificial Intelligence\\
-Technical University of Denmark}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
 
-\date{March 2026}
+\setlength{\headwidth}{180mm}
+\fancyhf{}
+\fancyhead[L]{Group 24}
+\fancyhead[R]{}
+\fancyfoot[C]{\thepage}
 
+\usepackage{geometry}
+\geometry{
+  left=15mm,
+  right=15mm,
+  top=20mm,
+  bottom=20mm
+}
+
+\usepackage{rotating}
+\usepackage{graphicx,color,psfrag}
+\usepackage{longtable}
+\usepackage{multirow}
+\usepackage[fleqn]{amsmath}
+\usepackage{breqn}
 \begin{document}
+ 
+% --------------------------------------------------------------
+%                         Start here
+% --------------------------------------------------------------
+ 
+\begin{titlepage}
+\newgeometry{top=45mm, bottom=30mm} % margini verticali più grandi SOLO qui
 
-\maketitle
-\section*{Group number: 24}
-\section*{Group Composition}
-\begin{itemize}
-    \item \textbf{Marco Cola} (Student ID: s260201)
-    \item \textbf{Michele Berlato} (Student ID: s250437)
-    \item \textbf{Alexandros Kouros} (Student ID: s260329)
-    \item \textbf{Mattia Russo} (Student ID: s257370)
-\end{itemize}
+\begin{center}
+\vspace{2cm}
+%\textsc{ Danmarks Tekniske Universitet}\\[1.5cm]
+\includegraphics[width=3cm]{images/Corp_Red_RGB.png}~\\[1cm]
+\vspace{2cm}
 
-\vspace{0.3cm}
-\newpage
+\vspace{2cm}
+
+% Title
+\hrule
+\vspace{.5cm}
+
+{\Large \textbf{Board Game Report} \\
+Introduction to Artificial Intelligence\\
+Course 02180\\
+[1ex]
+\Large }
+
+\vspace{.5cm}
+\hrule
+\vspace{1.5cm}
+
+\textsc{\textbf{Authors}}\\
+\vspace{.5cm}
+
+Michele Berlato - s250437  \\
+Marco Cola - s260201\\
+Alexandros Kouros - s260329 \\
+Mattia Russo - s257370\\
+
+
+\end{center}
+\end{titlepage}
+
+\restoregeometry
 
 \section{Game rules}
-\textit{Mancala is a classic "sowing" game played on a board consisting of two rows of
-pits and two larger reservoirs called Kalahs. The objective is straightforward: to accumulate 
-more stones in your own Kalah than your opponent. On each turn, a player selects all stones 
-from one of their pits and redistributes them one-by-one in a counter-clockwise direction, 
-including their own Kalah but skipping the opponent's.
-The game’s tactical depth arises from two key mechanics: Extra Turns, granted when the last stone 
-lands in the player’s Kalah, and Captures, triggered when the last stone lands in an empty pit 
-on the player’s side, allowing them to seize the stones in the opponent's opposite pit. The game 
-concludes when one side of the board is cleared, at which point the player with the highest total count in their Kalah is declared the winner.}
+%Kalaha or Mancala?
+Kalaha (also known as Mancala or Kalah) is a deterministic two-player board game consisting of two rows of six pits and two larger reservoirs called Kalahs. The objective is straightforward: to accumulate more stones in your own Kalah than your opponent. On each turn, a player selects all stones from one of their pits and redistributes them one-by-one in a counter-clockwise direction, including their own Kalah but skipping the opponent's. The game’s tactical depth arises from two key mechanics: Extra Turns, granted when the last stone lands in the player’s Kalah, and Captures, triggered when the last stone lands in an empty pit on the player’s side, allowing them to seize the stones in the opponent's opposite pit. The game concludes when one side of the board is cleared, at which point the player with the highest total count in their Kalah is declared the winner.
+%MARCO (decide to keep or not)
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.55\textwidth]{images/mancala_board.png}
+\caption{Initial board layout used in the implementation. Each player controls six pits and one kalah.}
+\end{figure}
+
 
 \section{Game Type}
-\textit{What kind of game is it? Relevant questions are e.g.: Single- or multi-player? Competitive
-or cooperative? Zero-sum? Is it turn-based, concurrent or real-time? Perfect or imperfect
-information (full or partial observability)? Deterministic or stochastic? And what does
-this imply for the kind of algorithms that apply to the game?}
+%OLD: Kalaha is a two-player, competitive, zero-sum game of perfect information (full observability). This implies that there are no hidden elements, such as hidden cards or secret moves, during gameplay. It is classified as a turn-based strategy game and is strictly deterministic, as the state of the board is altered solely by the players' choices; consequently, the same move in a given state always yields the identical successor state. \\
+%MARCO: (decide what fits better)
+The Kalaha game considered in this project has the following properties:
+\begin{itemize}
+    \item{\textbf{Players}:} 2
+    \item{\textbf{Type}:} Competitive
+    \item{\textbf{Payoff}:} Zero-sum
+    \item{\textbf{Information}:} Perfect information
+    \item{\textbf{Dynamics}:} Deterministic
+    \item{\textbf{Turn structure}:} Sequential turn-based
+    \item{\textbf{State observability}:} Fully observable
+\end{itemize}
+Because Kalaha fits these criteria, it is highly susceptible to adversarial search algorithms. The most effective approach is the Minimax algorithm enhanced by Alpha-Beta pruning, which allows an AI to navigate the game tree efficiently by discarding sub-optimal branches that do not affect the final decision.
+%MARCO: (decide which to keep)
+%These properties make Kalaha suitable for adversarial search algorithms such as Minimax and Alpha-Beta pruning.
+
 
 \section{Size space}
-\textit{What, approximately, is the size of the state space of the game, that is, the number of
-reachable states from an initial state of the game? Finding the precise number can often
-be very difficult, but here it is enough to estimate whether it is e.g. in the ballpark of $10^5$,
-$10^{10}$, $10^{15}$, $10^{20}$... You can e.g. try to give an upper bound on the size
-of the state space (or both a lower and upper bound). What does this imply for the kind
-of algorithms that apply to the game?}
+The state space of Kalaha, specifically the popular Kalah(6,4) variant is estimated to be between $10^{13}$ and $10^{15}$. However, when considering the game tree complexity the total number of possible move sequences the figure rises significantly, often cited between $10^{18}$ and $10^{33}$. \\
+%proposed section MARCO:
+\subsection*{Approximate state space estimation}
+A rough upper bound for the state space of Kalaha can be obtained by observing that the game contains a fixed number of stones. In the Kalah(6,4) variant there are
+\[
+48 = 12 \times 4
+\]
+stones distributed across the board. These stones can occupy any of the 14 pits (12 regular pits and 2 stores). Ignoring game constraints, the number of ways to distribute 48 identical stones into 14 locations can be computed using the classical \textit{stars and bars} combinatorial formula:
+\[
+\binom{48 + 14 - 1}{14 - 1} = \binom{61}{13}
+\]
+which corresponds to the number of integer solutions to
+\[
+c_0 + c_1 + \dots + c_{13} = 48
+\]
+where $c_i$ represents the number of stones in pit $i$.
+Evaluating this expression gives an upper bound of approximately
+\[
+|S| \approx 4.7 \times 10^{11}
+\]
+possible board configurations. \\
+In practice the true state space is larger because the current player must also be considered as part of the state representation, giving approximately
+\[
+|S| \approx 10^{12}
+\]
+states. \\
+This very large state space makes exhaustive search infeasible, motivating the use of depth-limited adversarial search algorithms combined with heuristic evaluation functions. \\%end
+%The magnitude of this state space implies that Mancala cannot be solved by simple brute-force during real-time gameplay. This necessitates the use of heuristic search algorithms. \\
+Specifically:
+\begin{itemize}
+    \item \textbf{Depth-Limited Search:} Algorithms like Minimax must stop at a predefined depth to remain computationally feasible, using an evaluation function to estimate the value of non-terminal states.
+    \item \textbf{Efficiency:} The use of Alpha-Beta pruning is mandatory to navigate this space, as it allows the AI to ignore vast branches of the tree that are mathematically proven to be sub-optimal, focusing its resources on the most promising lines of play.
+\end{itemize}
+%MARCO
+In a typical game state a player can choose between at most six pits, giving an approximate branching factor of $b \approx 6$. If the search depth is $d$, the theoretical complexity of Minimax search is therefore \[O(b^d)\]
+which quickly becomes infeasible for large depths. For example, with $b=6$ and $d=8$, the number of explored nodes would already exceed $1.6\times10^6$. This motivates the use of Alpha-Beta pruning, which can reduce the effective branching factor and allow deeper search.
+
 
 \section{Elements of the game}
-\textit{Describe the following elements of your game (or the relevant subset): $s_0$ (initial state),
-Player(s), Action(s), Result(s, a), Terminal-Test(s), Utility(s, p). You don't
-necessarily have to specify these formally, but try to describe them as clearly and precisely
-as possible. If your chosen game cannot be expressed fully in terms of these functions,
-explain why, and describe the additional components as precisely as possible.}
+%OLD: Kalaha can be formally defined as a search problem using the following components:
+%MARCO:
+Kalaha can be formally defined as a search problem
+\[
+G = (s_0, Player(s), Action(s), Result(s,a), Terminal-Test(s), Utility(s, p))
+\]
+where each component is defined as follows:
+\begin{itemize}
+    \item \textbf{Initial state $s_0$:} A board with 12 pits, each containing 4 stones, and 2 empty Kalahs.
+    \item \textbf{Player(s):} Returns the player whose turn it is, the player may move multiple times if the "extra turn" rule is triggered.
+    \item \textbf{Action(s):} Selecting any non-empty pit on the current player's side of the board.
+    \item \textbf{Result(s,a):} The state resulting from "sowing" the stones from the chosen pit counter-clockwise, including captures and extra turn logic.
+    \item \textbf{Terminal-Test(s):} True if all pits on either player's side are empty.
+    \item\textbf{Utility(s,p):} Calculated at the terminal state as the difference between stones in the player's Kalah and the opponent's.
+    \[
+    Utility(s,p) = Store_p(s) - Store_{opp}(s)
+    \]
+\end{itemize}
+
 
 \section{AI states and moves representation}
-\textit{How are states and moves represented in the computer? To make AI for this game, was
-it enough to represent a game state as the position of the pieces or the distribution of the
-cards? Or was it e.g. necessary to represent game states as belief states, and why? Don’t
-give too implementation-specific answers, but answer in overall terms of algorithms and
-data structures.}
+%MARCO:
+In the implementation the board state is represented as a vector of length 14:
+\[
+s = (c_0,c_1,\ldots,c_{13})
+\]
+where each $c_i$ represents the number of stones contained in pit $i$.
+Indices $0-5$ correspond to Player 1 pits, index $6$ to Player 1's store, indices $7-12$ to Player 2 pits and index $13$ to Player 2's store. \\
+%end
+%OLD: Kalaha state is typically represented by a simple linear data structure, such as an array or a vector of integers. Each element in the array corresponds to a pit or a Kalah, and its value represents the number of stones contained within.
+Moves are represented as the index of the pit from which the "sowing" process begins. Since the rules for stone distribution, captures, and extra turns are deterministic, the transition from one state to the next requires no additional information beyond the chosen index. \\
+It's not necessary to represent game states as belief states, because Mancala is a game of full observability, the current "physical" position of the stones is the only information needed.
+
 
 \section{Methods \& Algorithms}
-\textit{Which of the methods and algorithms considered in the course could potentially be used
-to construct AI for your game, and which have you chosen? If you use one of the standard
-algorithms without modification, you don’t have to describe it, but can just refer to the
-textbook (or other sources). However, try to give a small concrete example of how the
-algorithm works in your game, e.g. by illustrating a few steps of the search graph/tree
-being built (you can do this in a smaller or simplified version of the game, if you prefer).
-Also, argue of the appropriateness of your chosen algorithm for the chosen game.}
+For the development of a Mancala AI, the most appropriate choice among the methods discussed in the course is the Minimax algorithm enhanced with Alpha-Beta pruning. \\
+This selection is justified by the game's nature: as a deterministic, zero-sum game of perfect information, Minimax can theoretically map every possible evolution of the match to find the optimal strategy while the alpha beta pruning allow to ignore branches that are mathematically proven to be worse than previously explored options, allowing to doubles the searchable depth. \\
+%MARC:
+The value of a state in the \textit{Minimax} framework is defined recursively as
+\[
+V(s)=
+\begin{cases}
+Utility(s) & \text{if } Terminal-Test(s) \\
+\max_{a\in Actions(s)} V(Result(s,a)) & \text{if the current player is MAX} \\
+\min_{a\in Actions(s)} V(Result(s,a)) & \text{if the current player is MIN}
+\end{cases}
+\]
+In practice the search tree must be truncated at a finite depth $d$. In that case a heuristic evaluation function $h(s)$ is used instead of the true utility value. \\
+\textit{Alpha-Beta pruning} improves the efficiency of Minimax by maintaining two bounds:
+\[
+\alpha = \text{best value found so far for MAX}
+\]
+\[
+\beta = \text{best value found so far for MIN}
+\]
+Whenever the condition
+\[
+\alpha \geq \beta
+\]
+is satisfied, the remaining branches of the search tree can be pruned because they cannot influence the final decision.
+
 
 \section{Heuristics and Evaluation functions}
-\textit{If you use heuristics or evaluation functions, make sure to explain how these have been
-designed. Use mathematical notation rather than implementation-specific notation.}
+%MARCO:
+For non-terminal states the AI player uses a heuristic evaluation function. The heuristic estimates the advantage of a player by comparing the number of stones collected in the stores:
+%in the code it's used: store(player) - store(opponent)
+\[
+h(s,p) = Store_p(s) - Store_{opp}(s)
+\]
+where $Store_p(s)$ represents the number of stones in player $p$'s Kalah, while $Store_{opp}(s)$ the number of stones in the opposition player's Kalah.
+This heuristic reflects the objective of the game, since the winner is determined by the number of stones in the stores. Although simple, it provides a reasonable estimate of positional advantage during search.
+
 
 \section{Implemented AI's parameters}
-\textit{Are there any parameters that can be adjusted in your implemented AI? Did you try out
-several different algorithms, search depths, heuristics or evaluation functions? If so, it is
-a very good idea to include benchmarks (test results) comparing the different versions. It
-is also interesting to compare the strength of the AIs to human players (yourselves).}
+%MARCO:
+%from AIPlayer python code: depth and use_alpha_beta:
+The implemented AI player allows several parameters to be adjusted:
+\begin{itemize}
+\item \textbf{Search depth ($d$):} determines how many moves ahead the algorithm explores the game tree.
+\item \textbf{Search algorithm:} either standard Minimax or Minimax with Alpha-Beta pruning.
+\end{itemize}
+In the implementation the default search depth is $d=7$. Increasing the depth generally improves playing strength but significantly increases computational cost. \\
+The program also allows AI vs AI matches to benchmark different parameter settings and compare the performance of Minimax and Alpha-Beta pruning.
+
 
 \section{Future work}
-\textit{Comments on future work: How could your solution be improved? Could it be optimised
-using the same algorithms and data structures that you are currently using? Or would
-significant improvements of the AI require different methods, and if so, which could be
-considered?}
+%MARCO:
+Several improvements could further enhance the AI performance:
+\begin{itemize}
+\item \textbf{Improved evaluation functions:} including additional features such as the number of stones on each side of the board or potential captures.
+\item \textbf{Transposition tables:} storing previously evaluated states to avoid redundant computations.
+\item \textbf{Iterative deepening search:} combining depth-limited search with time constraints.
+\item \textbf{Monte Carlo Tree Search:} an alternative approach often used in complex board games.
+\end{itemize}
+
 
 \end{document}
