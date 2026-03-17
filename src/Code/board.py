@@ -70,17 +70,21 @@ class Board:
     def get_current_player_pits(self, current: Player):
         return P1_PITS if current == 1 else P2_PITS
     
-    def saw(self, pit: int, player: int): # CHECK OF THE VALID MOVE BEFORE CALLING THIS METHOD
+    def saw(self, pit: int, player: int):
         extra_turn, capture = False, False
         
         seeds = self.cells[pit]
         self.cells[pit] = 0
+
+        # Cycle to spread seeds in the following cells
         for i in range(seeds):
             self.cells[(pit + 1 + i)%TOT_CELLS] += 1
         
+        # Check if extra turn is feasible: last seed in my kahala
         if pit + i == self.get_current_player_store(player):
             extra_turn = True
         
+        # Check if the capture is feasible: last seed in one of my empty cells, opponent cell not empty
         if (pit + i in self.get_current_player_pits(player)) & (self.cells[pit + i] == 1) & (self.get_opposite_seeds(pit) != 0):
             self.cells[self.get_current_player_store(player)] += self.get_opposite_seeds(pit) + 1
             self.cells[pit + i] = 0
@@ -88,6 +92,3 @@ class Board:
             capture = True
 
         return extra_turn, capture
-
-
-# CHECK IF SAW METHOD IS CONSISTENT WITH AI GENERATED ONE
