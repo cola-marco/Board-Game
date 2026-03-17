@@ -39,10 +39,13 @@ class Board:
     def get_opposite_seeds(self, pit: int):
         return self.cells[12 - pit]
     
+    def set_opposite_seeds(self, pit: int, value: int):
+        self.cells[12 - pit] = value
+    
     def get_valid_moves(self, player: Player):
         return [pit for pit in (P1_PITS if player == 0 else P2_PITS)]
     
-    def get_winner():
+    def get_winner(self):
         if P1_STORE > P2_STORE:
             return 0
         elif P2_STORE > P1_STORE:
@@ -59,7 +62,7 @@ class Board:
             self.cells[pit] = 0
 
     def check_game_end(self):
-        return (all(self.cells[P1_PITS] == 0) or all(self.cells[P2_PITS] == 0))
+        return (all(self.cells[p] == 0 for p in P1_PITS) or all(self.cells[p] == 0 for p in P2_PITS))
     
     def get_current_player_store(self, current: Player):
         return P1_STORE if current == 1 else P2_STORE
@@ -73,15 +76,15 @@ class Board:
         seeds = self.cells[pit]
         self.cells[pit] = 0
         for i in range(seeds):
-            self.cells[(pit + 1 + i)%14] += 1
+            self.cells[(pit + 1 + i)%TOT_CELLS] += 1
         
         if pit + i == self.get_current_player_store(player):
             extra_turn = True
         
         if (pit + i in self.get_current_player_pits(player)) & (self.cells[pit + i] == 1) & (self.get_opposite_seeds(pit) != 0):
-            self.cells[self.get_current_player_store()] += self.get_opposite_seeds(pit) + 1
+            self.cells[self.get_current_player_store(player)] += self.get_opposite_seeds(pit) + 1
             self.cells[pit + i] = 0
-            self.get_opposite_seeds(pit) = 0
+            self.set_opposite_seeds(pit, 0)
             capture = True
 
         return extra_turn, capture
