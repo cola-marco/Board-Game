@@ -4,30 +4,14 @@ from player import Player
 
 
 def evaluate(board: Board, player: int) -> int:
-    """
-    Heuristic evaluation function for non-terminal states.
-    
-    h(s, p) = store(p) - store(opponent)
-    
-    This is the natural and most direct evaluation for Kalah:
-    the difference in seeds between the two stores reflects
-    the current advantage of player p.
-    """
     opponent = 3 - player
     return board.cells[board.get_store(player)] - board.cells[board.get_store(opponent)]
 
 
 def minimax(board: Board, depth: int, maximizing: bool, player: int) -> tuple[int, int | None]:
-    """
-    Minimax without alpha-beta pruning.
-    Returns (score, best_pit_index).
-
-    Note: extra turns are handled naturally — when a move grants an extra turn,
-    it is still the same player's turn, so we call minimax with maximizing=True again.
-    """
     opponent = 3 - player
 
-    if board.is_terminal():
+    if board.check_end():
         b = board.copy()
         b.collect_remaining()
         return evaluate(b, player), None
@@ -68,13 +52,9 @@ def minimax(board: Board, depth: int, maximizing: bool, player: int) -> tuple[in
 
 
 def minimax_ab(board: Board, depth: int, alpha: float, beta: float, maximizing: bool, player: int) -> tuple[int, int | None]:
-    """
-    Minimax with Alpha-Beta pruning.
-    Returns (score, best_pit_index).
-    """
     opponent = 3 - player
 
-    if board.is_terminal():
+    if board.check_end():
         b = board.copy()
         b.collect_remaining()
         return evaluate(b, player), None
@@ -92,8 +72,7 @@ def minimax_ab(board: Board, depth: int, alpha: float, beta: float, maximizing: 
         for pit in valid_moves:
             new_board = board.copy()
             extra_turn, _ = new_board.sow(player, pit)
-            next_max = extra_turn  # extra turn -> same player -> still maximizing
-            score, _ = minimax_ab(new_board, depth - 1, alpha, beta, next_max, player)
+            score, _ = minimax_ab(new_board, depth - 1, alpha, beta, extra_turn, player)
             if score > best_score:
                 best_score = score
                 best_pit = pit
@@ -107,8 +86,7 @@ def minimax_ab(board: Board, depth: int, alpha: float, beta: float, maximizing: 
         for pit in valid_moves:
             new_board = board.copy()
             extra_turn, _ = new_board.sow(opponent, pit)
-            next_max = extra_turn  # opponent extra turn -> still minimizing
-            score, _ = minimax_ab(new_board, depth - 1, alpha, beta, next_max, player)
+            score, _ = minimax_ab(new_board, depth - 1, alpha, beta, extra_turn, player)
             if score < best_score:
                 best_score = score
                 best_pit = pit

@@ -12,15 +12,11 @@ class Game:
         self.current = 3 - self.current
 
     def play(self) -> int:
-        """
-        Runs the full game loop.
-        Returns the winner (1, 2, or 0 for draw).
-        """
         print("\n=== KALAHA ===\n")
         print(self.board)
         print()
 
-        while not self.board.is_terminal():
+        while not self.board.check_end():
             player = self.players[self.current]
             print(f"--- {player}'s turn ---")
 

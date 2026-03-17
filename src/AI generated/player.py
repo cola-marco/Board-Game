@@ -8,7 +8,6 @@ class Player(ABC):
 
     @abstractmethod
     def get_move(self, board: Board) -> int:
-        """Returns the pit index chosen by this player."""
         pass
 
     def __str__(self):
