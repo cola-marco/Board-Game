@@ -67,8 +67,7 @@ def minimax(board: Board, depth: int, maximizing: bool, player: int) -> tuple[in
         return best_score, best_pit
 
 
-def minimax_ab(board: Board, depth: int, alpha: float, beta: float,
-               maximizing: bool, player: int) -> tuple[int, int | None]:
+def minimax_ab(board: Board, depth: int, alpha: float, beta: float, maximizing: bool, player: int) -> tuple[int, int | None]:
     """
     Minimax with Alpha-Beta pruning.
     Returns (score, best_pit_index).

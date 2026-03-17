@@ -4,7 +4,7 @@ from board import Board
 
 class Player(ABC):
     def __init__(self, player_id: int):
-        self.player_id = player_id  # 1 or 2
+        self.player_id = player_id  # 0 or 1
 
     @abstractmethod
     def get_move(self, board: Board) -> int:

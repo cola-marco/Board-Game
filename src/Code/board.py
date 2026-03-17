@@ -45,6 +45,9 @@ class Board:
     def get_valid_moves(self, player: Player):
         return [pit for pit in (P1_PITS if player == 0 else P2_PITS)]
     
+    def get_store(self, player: int):
+        return self.cells[P1_STORE if player == 0 else P2_STORE]
+    
     def get_winner(self):
         if P1_STORE > P2_STORE:
             return 0
@@ -70,7 +73,12 @@ class Board:
     def get_current_player_pits(self, current: Player):
         return P1_PITS if current == 1 else P2_PITS
     
-    def saw(self, pit: int, player: int):
+    def copy(self):
+        new_board = Board()
+        new_board.cells = self.cells[:]
+        return new_board
+    
+    def sow(self, pit: int, player: int):
         extra_turn, capture = False, False
         
         seeds = self.cells[pit]
