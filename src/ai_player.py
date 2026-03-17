@@ -1,14 +1,8 @@
 import math
-import random
 from board import Board
 from player import Player
 
 def evaluate(board: Board, player: int) -> int:
-    """
-    Improved Heuristic:
-    Weights the store difference and the seeds remaining in pits.
-    A higher weight on stores ensures the AI prioritizes scoring.
-    """
     opponent = 3 - player
     
     my_store = board.cells[board.get_store(player)]
@@ -21,7 +15,6 @@ def evaluate(board: Board, player: int) -> int:
     return (my_store - opp_store) * 10 + (my_pits_seeds - opp_pits_seeds)
 
 def minimax(board: Board, depth: int, maximizing: bool, player: int) -> tuple[int, int | None]:
-    """Pure Minimax for comparison. Fixed to be deterministic."""
     if board.is_terminal() or depth == 0:
         b = board.copy()
         if board.is_terminal(): b.collect_remaining()
@@ -55,9 +48,7 @@ def minimax(board: Board, depth: int, maximizing: bool, player: int) -> tuple[in
                 best_pit = pit
         return best_score, best_pit
 
-def minimax_ab(board: Board, depth: int, alpha: float, beta: float,
-               maximizing: bool, player: int) -> tuple[int, int | None]:
-    """Alpha-Beta Pruning with Move Ordering for maximum efficiency."""
+def minimax_ab(board: Board, depth: int, alpha: float, beta: float, maximizing: bool, player: int) -> tuple[int, int | None]:
     if board.is_terminal() or depth == 0:
         b = board.copy()
         if board.is_terminal(): b.collect_remaining()
@@ -69,7 +60,6 @@ def minimax_ab(board: Board, depth: int, alpha: float, beta: float,
     if not valid_moves:
         return evaluate(board, player), None
 
-    # --- MOVE ORDERING ---
     # We sort moves to check pits with more seeds first.
     # This increases the chance of early cutoffs in Alpha-Beta.
     valid_moves.sort(key=lambda m: board.cells[m], reverse=True)

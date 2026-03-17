@@ -1,6 +1,3 @@
-"""
-benchmark.py — Updated version with preferred output format and expanded tests.
-"""
 import io
 import sys
 import random
