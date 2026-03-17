@@ -44,7 +44,7 @@ def winrate_experiment():
     plt.show()
 
 def time_experiment():
-    depths = [1, 2, 3, 4, 5, 6, 7]
+    depths = [2, 3, 4, 5, 6]
 
     ab_times = []
     mm_times = []
