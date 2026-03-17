@@ -2,7 +2,7 @@ import math
 from board import Board
 from player import Player
 
-def heuristic(board: Board, player: int, extra_turn: bool = False, captured: bool = False) -> int:
+def evaluate(board: Board, player: int, extra_turn: bool = False, captured: bool = False) -> int:
     opponent = 3 - player
     
     my_store = board.cells[board.get_store(player)]
@@ -21,16 +21,16 @@ def minimax(board: Board, depth: int, maximizing: bool, player: int, last_extra:
     if board.is_terminal():
         b = board.copy()
         b.collect_remaining()
-        return heuristic(b, player), None
+        return evaluate(b, player), None
 
     if depth == 0:
-        return heuristic(board, player, last_extra, last_captured), None
+        return evaluate(board, player, last_extra, last_captured), None
 
     current_player = player if maximizing else 3 - player
     valid_moves = board.get_valid_moves(current_player)
     
     if not valid_moves:
-        return heuristic(board, player, last_extra, last_captured), None
+        return evaluate(board, player, last_extra, last_captured), None
 
     best_pit = valid_moves[0]
     if maximizing:
@@ -61,16 +61,16 @@ def minimax_ab(board: Board, depth: int, alpha: float, beta: float, maximizing: 
     if board.is_terminal():
         b = board.copy()
         b.collect_remaining()
-        return heuristic(b, player), None
+        return evaluate(b, player), None
 
     if depth == 0:
-        return heuristic(board, player, last_extra, last_captured), None
+        return evaluate(board, player, last_extra, last_captured), None
 
     current_player = player if maximizing else 3 - player
     valid_moves = board.get_valid_moves(current_player)
     
     if not valid_moves:
-        return heuristic(board, player, last_extra, last_captured), None
+        return evaluate(board, player, last_extra, last_captured), None
 
     # Move Ordering: Essential for Alpha-Beta efficiency
     valid_moves.sort(key=lambda m: board.cells[m], reverse=True)
