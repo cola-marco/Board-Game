@@ -10,7 +10,7 @@ from board import Board
 N = 50  # number of games
 
 def winrate_experiment():
-    depths = [3, 4, 5, 6]
+    depths = [3, 4, 7]
 
     ab_winrates = []
     mm_winrates = []
@@ -96,7 +96,7 @@ def time_experiment():
 
 def main():
     winrate_experiment()
-    time_experiment()
+    #time_experiment()
 
 
 if __name__ == "__main__":
