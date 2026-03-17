@@ -2,6 +2,21 @@ import math
 from board import Board
 from player import Player
 
+# adding node count to generate the node count plot
+NODE_COUNT = 0
+
+def reset_node_count():
+    global NODE_COUNT
+    NODE_COUNT = 0
+
+def increment_node_count():
+    global NODE_COUNT
+    NODE_COUNT += 1
+
+def get_node_count():
+    return NODE_COUNT
+
+
 def evaluate(board: Board, player: int, extra_turn: bool = False, captured: bool = False) -> int:
     opponent = 3 - player
     
@@ -18,6 +33,8 @@ def evaluate(board: Board, player: int, extra_turn: bool = False, captured: bool
     return (my_store - opp_store) * 20 + (my_pits_seeds - opp_pits_seeds) + extra_turn_bonus + capture_bonus
 
 def minimax(board: Board, depth: int, maximizing: bool, player: int, last_extra: bool = False, last_captured: bool = False) -> tuple[int, int | None]:
+    increment_node_count()
+    
     if board.is_terminal():
         b = board.copy()
         b.collect_remaining()
@@ -57,6 +74,8 @@ def minimax(board: Board, depth: int, maximizing: bool, player: int, last_extra:
         return best_score, best_pit
 
 def minimax_ab(board: Board, depth: int, alpha: float, beta: float, maximizing: bool, player: int, last_extra: bool = False, last_captured: bool = False) -> tuple[int, int | None]:
+    increment_node_count()
+    
     """Alpha-Beta Pruning. Optimized for speed using the same logic as Minimax."""
     if board.is_terminal():
         b = board.copy()

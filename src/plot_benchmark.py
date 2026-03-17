@@ -6,6 +6,7 @@ import sys
 from benchmark import run_games
 from ai_player import AIPlayer
 from board import Board
+from ai_player import reset_node_count, get_node_count
 
 N = 200  # number of games
 
@@ -94,10 +95,57 @@ def time_experiment():
     plt.savefig("time_comparison.png")
     plt.show()
 
+# added node count experiment
+def node_experiment():
+    depths = [1, 2, 3, 4, 5, 6, 7]
+
+    ab_nodes = []
+    mm_nodes = []
+
+    print("\nRunning node count experiment...")
+
+    for use_ab, label, store in [
+        (True, "Alpha-Beta", ab_nodes),
+        (False, "Minimax", mm_nodes)
+    ]:
+        for depth in depths:
+            ai = AIPlayer(1, depth=depth, use_alpha_beta=use_ab)
+            board = Board()
+
+            reset_node_count()
+
+            # suppress output
+            old_out = sys.stdout
+            sys.stdout = io.StringIO()
+
+            ai.get_move(board)
+
+            sys.stdout = old_out
+
+            nodes = get_node_count()
+            store.append(nodes)
+
+            print(f"{label} depth={depth}: {nodes} nodes")
+
+    # Plot
+    plt.figure()
+    plt.plot(depths, ab_nodes, marker='o', label='Alpha-Beta')
+    plt.plot(depths, mm_nodes, marker='o', label='Minimax')
+
+    plt.xlabel("Depth")
+    plt.ylabel("Nodes explored")
+    plt.title("Search Tree Size: Nodes vs Depth")
+    plt.legend()
+    plt.grid()
+
+    plt.savefig("node_comparison.png")
+    plt.show()
+    
 
 def main():
     winrate_experiment()
-    #time_experiment()
+    time_experiment()
+    node_experiment()
 
 
 if __name__ == "__main__":
