@@ -16,8 +16,8 @@ def run_games(p1_depth, p2_depth, p1_ab, p2_ab, n_games=50):
         ai2 = AIPlayer(2, depth=p2_depth, use_alpha_beta=p2_ab)
         game = Game(ai1, ai2)
 
-        # Diverse openings with 2 random moves
-        for _ in range(2):
+        # Diverse openings with 1 random moves
+        for _ in range(1):  # changed from 2 random moves to 1 to have a more similar tree and more stable results
             if game.board.is_terminal():
                 break
             valid = game.board.get_valid_moves(game.current)
@@ -42,7 +42,7 @@ def fmt(label1, label2, results, n):
     return f"  {label1:<25} vs {label2:<25} | P1: {p1:>2}/{n}  P2: {p2:>2}/{n}  Draw: {d:>2}/{n}"
 
 def main():
-    N = 50
+    N = 200 # increased number of games to have a bigger sample size
     print(f"=== KALAH BENCHMARK ({N} games per matchup) ===\n")
 
     # --- Experiment 1 ---

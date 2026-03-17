@@ -7,10 +7,10 @@ from benchmark import run_games
 from ai_player import AIPlayer
 from board import Board
 
-N = 50  # number of games
+N = 200  # number of games
 
 def winrate_experiment():
-    depths = [3, 5, 7]
+    depths = [1, 2, 3, 4, 5, 6, 7]
 
     ab_winrates = []
     mm_winrates = []
@@ -42,6 +42,7 @@ def winrate_experiment():
 
     plt.savefig("winrate_comparison.png")
     plt.show()
+
 
 def time_experiment():
     depths = [2, 3, 4, 5, 6]
