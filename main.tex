@@ -1,6 +1,6 @@
 \documentclass[a4paper,11pt]{article}
 
-
+\usepackage{float}
 \usepackage{fancyhdr}
 \pagestyle{fancy}
 
@@ -169,11 +169,11 @@ Indices $0-5$ correspond to Player 1 pits, index $6$ to Player 1's store, indice
 %end
 %OLD: Kalaha state is typically represented by a simple linear data structure, such as an array or a vector of integers. Each element in the array corresponds to a pit or a Kalah, and its value represents the number of stones contained within.
 Moves are represented as the index of the pit from which the "sowing" process begins. Since the rules for stone distribution, captures, and extra turns are deterministic, the transition from one state to the next requires no additional information beyond the chosen index. \\
-It's not necessary to represent game states as belief states, because Mancala is a game of full observability, the current "physical" position of the stones is the only information needed.
+It's not necessary to represent game states as belief states, because Kalaha is a game of full observability, the current "physical" position of the stones is the only information needed.
 
 
 \section{Methods \& Algorithms}
-For the development of a Mancala AI, the most appropriate choice among the methods discussed in the course is the Minimax algorithm enhanced with Alpha-Beta pruning. \\
+For the development of a Kalaha AI, the most appropriate choice among the methods discussed in the course is the Minimax algorithm enhanced with Alpha-Beta pruning. \\
 This selection is justified by the game's nature: as a deterministic, zero-sum game of perfect information, Minimax can theoretically map every possible evolution of the match to find the optimal strategy while the alpha beta pruning allow to ignore branches that are mathematically proven to be worse than previously explored options, allowing to doubles the searchable depth. \\
 %MARC:
 The value of a state in the \textit{Minimax} framework is defined recursively as
@@ -198,17 +198,47 @@ Whenever the condition
 \alpha \geq \beta
 \]
 is satisfied, the remaining branches of the search tree can be pruned because they cannot influence the final decision.
+\subsection*{Concrete Example of Algorithm Operation}
+%Michele
+To illustrate the operation of the Minimax algorithm with Alpha-Beta pruning within the context of Kalaha, consider a simplified end-game scenario with a search depth of $d$=2: 
+\begin{enumerate}
+  \item \textbf{Initial State $s_0$:} It is the turn of MAX (Player 1). Suppose they have two legal moves: emptying pit 4 (Move A) or pit 5 (Move B).
+  \item \textbf{Level 1 (Expansion):} The algorithm generates two child nodes, $n1$ (the result of Move A) and $n2$ (the result of Move B).
+  \item \textbf{Level 2 (MIN Evaluation):}For each of MAX's moves, the opponent (MIN) evaluates their optimal responses:
+  \begin{itemize}
+      \item In branch $n1$, MIN has two responses leading to heuristic values $h$=5 and $h$=3. MIN will choose the minimum (3). The backup value for the root node becomes $\alpha$ = 3.
+      \item In branch $n2$, the algorithm evaluates MIN's first response, which returns $h$=2.
+  \end{itemize}
+  \item\textbf{Pruning:}Since the value found ($2$) is already lower than the best-guaranteed value for MAX ($\alpha=3$), the pruning condition is satisfied:
+$$\alpha \ge \beta \implies 3 \ge 2$$
+The algorithm therefore ignores the remaining sub-branches of $n_2$, as they cannot influence the final utility $V(s)$.
+\end{enumerate}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.6\textwidth]{images/Kalaha_example.jpg}
+    \caption{A simplified search tree illustrating Alpha-Beta pruning starting from $s_0$. The algorithm explores the left branch first, finding $\alpha=3$. Upon evaluating the first node of the right branch ($\beta=2$), the condition $\alpha \ge \beta$ is met, and the remaining sub-branch is pruned.}
+    \label{fig:kalaha_pruning}
+\end{figure}
 
 
 \section{Heuristics and Evaluation functions}
 %MARCO:
-For non-terminal states the AI player uses a heuristic evaluation function. The heuristic estimates the advantage of a player by comparing the number of stones collected in the stores:
-%in the code it's used: store(player) - store(opponent)
+For non-terminal states, the AI player utilizes an advanced heuristic evaluation function $h(s, p)$. This function estimates the positional advantage of player $p$ by considering a weighted combination of material count and strategic bonuses:
+
 \[
-h(s,p) = Store_p(s) - Store_{opp}(s)
+h(s, p) = 20 \cdot \Delta Store + \Delta Pits + Bonus_{extra} + Bonus_{capture}
 \]
-where $Store_p(s)$ represents the number of stones in player $p$'s Kalah, while $Store_{opp}(s)$ the number of stones in the opposition player's Kalah.
-This heuristic reflects the objective of the game, since the winner is determined by the number of stones in the stores. Although simple, it provides a reasonable estimate of positional advantage during search.
+
+Where:
+\begin{itemize}
+    \item \textbf{$\Delta Store$}: The difference between the seeds in player $p$'s store ($Store_p$) and the opponent's store ($Store_{opp}$). This is the primary objective of the game.
+    \item \textbf{$\Delta Pits$}: The difference between the total seeds remaining in $p$'s pits and the opponent's pits. This serves as a measure of potential future points and defensive stability.
+    \item \textbf{$Bonus_{extra}$}: A strategic reward (set to $15$) added if the move leads to an extra turn. This encourages the AI to prioritize move chains that maintain board control.
+    \item \textbf{$Bonus_{capture}$}: A tactical reward (set to $10$) added if the move results in a capture.
+\end{itemize}
+
+By assigning a high weight ($20$) to the store difference, the AI prioritizes scoring above all else. However, the inclusion of the pit difference and dynamic bonuses prevents "myopic" behavior. The AI will avoid moves that score a single point but leave its side vulnerable, and it will actively seek out tactical opportunities like captures and extra turns that a simpler heuristic would overlook.
 
 
 \section{Implemented AI's parameters}
@@ -223,14 +253,54 @@ In the implementation the default search depth is $d=7$. Increasing the depth ge
 The program also allows AI vs AI matches to benchmark different parameter settings and compare the performance of Minimax and Alpha-Beta pruning.
 
 
+%OLD:
+%We compared the computational performance of Minimax and Alpha-Beta pruning across multiple search depths, as shown in Figure \ref{fig:time_comparison} and Figure:
+%\begin{itemize}
+%\item Alpha-Beta pruning consistently requires significantly less time per move than standard Minimax at all tested %depths
+%\item The difference becomes especially pronounced at higher depths, where Minimax exhibits rapid exponential %growth in computation time
+%\item At depth 7, Minimax becomes substantially slower, while Alpha-Beta remains computationally feasible
+%\end{itemize}
+%These results align with the theoretical complexity of adversarial search. While Minimax has a time complexity of $O(b^d)$, Alpha-Beta pruning reduces the effective branching factor by eliminating suboptimal branches, allowing deeper exploration within practical time limits.
+%\begin{figure}[H]
+%\centering
+%\includegraphics[width=0.7\linewidth]{images/time_comparison.png}
+%\caption{Average time per move as a function of search depth for Minimax and Alpha-Beta pruning.}
+%\label{fig:time_comparison}
+%\end{figure}
+\section*{Benchmark Results}
+We compared both the computational performance and playing strength of Minimax and Alpha-Beta pruning across multiple search depths. Each configuration was evaluated over $N = 200$ simulated games. To eliminate first-player bias, experiments were conducted twice with swapped player roles, and the results were averaged. \\
+The main parameters varied in the experiments are the search depth $d$ and the choice of search algorithm (Minimax vs Alpha-Beta pruning).
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\linewidth]{images/time_comparison.png}
+\caption{Average time per move as a function of search depth for Minimax and Alpha-Beta pruning.}
+\label{fig:time_comparison}
+\end{figure}
+As shown in Figure~\ref{fig:time_comparison}, Alpha-Beta pruning consistently requires significantly less time per move than standard Minimax at all tested depths. The difference becomes especially pronounced at higher depths, where Minimax exhibits rapid exponential growth in computation time. At depth 7, Minimax becomes substantially slower, while Alpha-Beta remains computationally feasible.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\linewidth]{images/winrate_comparison.png}
+\caption{Win rate comparison between Alpha-Beta and Minimax across different depths. Results are averaged over both player roles to eliminate first-player bias.}
+\label{fig:winrate_comparison}
+\end{figure}
+Figure~\ref{fig:winrate_comparison} shows that the win rates of Minimax and Alpha-Beta pruning are overall very similar across all tested depths. This is expected, as Alpha-Beta pruning does not alter the decision-making process of Minimax, but only improves its efficiency by pruning branches that cannot influence the final outcome. Minor differences in win rate are due to stochastic elements in the experimental setup and the finite number of simulated games.
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\linewidth]{images/node_comparison.png}
+\caption{Number of nodes explored by Minimax and Alpha-Beta pruning as a function of search depth.}
+\label{fig:node_comparison}
+\end{figure}
+Figure~\ref{fig:node_comparison} shows the number of nodes explored during the search for both algorithms. As expected, Minimax exhibits exponential growth in the size of the search tree as the depth increases. In contrast, Alpha-Beta pruning significantly reduces the number of explored nodes by eliminating branches that cannot influence the final decision. At higher depths, the reduction becomes substantial, explaining the performance improvements observed in Figure~\ref{fig:time_comparison}. \\
+These results align with the theoretical complexity of adversarial search. While Minimax has a time complexity of $O(b^d)$, Alpha-Beta pruning reduces the effective branching factor by eliminating suboptimal branches, allowing deeper exploration within practical time limits.
+
+
 \section{Future work}
 %MARCO:
 Several improvements could further enhance the AI performance:
 \begin{itemize}
-\item \textbf{Improved evaluation functions:} including additional features such as the number of stones on each side of the board or potential captures.
 \item \textbf{Transposition tables:} storing previously evaluated states to avoid redundant computations.
 \item \textbf{Iterative deepening search:} combining depth-limited search with time constraints.
-\item \textbf{Monte Carlo Tree Search:} an alternative approach often used in complex board games.
+\item \textbf{Monte Carlo Tree Search:} an alternative algorithmic approach.
 \end{itemize}
 
 
