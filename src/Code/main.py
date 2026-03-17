@@ -12,12 +12,12 @@ def choose_game_mode():
 
     while(True):
         if mode == '1':
-            return HumanPlayer(), HumanPlayer()
+            return HumanPlayer(0), HumanPlayer(1)
 
         elif mode == '2':
             print('Choose the depth of the search algorithm of the AI agent (1-7):')
             while(True):
-                depth = input().strip()
+                depth = int(input().strip())
                 if(depth > 0 & depth < 8):
                     return HumanPlayer(), AIagent(depth)
                 print('Invalid depth value, try again')

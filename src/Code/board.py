@@ -43,7 +43,8 @@ class Board:
         self.cells[12 - pit] = value
     
     def get_valid_moves(self, player: Player):
-        return [pit for pit in (P1_PITS if player == 0 else P2_PITS)]
+        return [pit for pit in (P1_PITS if player == 0 else P2_PITS) 
+                if self.cells[pit] > 0]
     
     def get_winner(self):
         if P1_STORE > P2_STORE:
@@ -64,31 +65,45 @@ class Board:
     def check_game_end(self):
         return (all(self.cells[p] == 0 for p in P1_PITS) or all(self.cells[p] == 0 for p in P2_PITS))
     
-    def get_current_player_store(self, current: Player):
-        return P1_STORE if current == 1 else P2_STORE
+    def get_current_player_store(self, player: int):
+        return P1_STORE if player == 0 else P2_STORE
     
     def get_current_player_pits(self, current: Player):
         return P1_PITS if current == 1 else P2_PITS
     
     def saw(self, pit: int, player: int):
         extra_turn, capture = False, False
-        
+
         seeds = self.cells[pit]
         self.cells[pit] = 0
 
-        # Cycle to spread seeds in the following cells
-        for i in range(seeds):
-            self.cells[(pit + 1 + i)%TOT_CELLS] += 1
-        
-        # Check if extra turn is feasible: last seed in my kahala
-        if pit + i == self.get_current_player_store(player):
+        pos = pit
+        opponent_store = P2_STORE if player == 0 else P1_STORE
+
+        while seeds > 0:
+            pos = (pos + 1) % TOT_CELLS
+
+            if pos == opponent_store:
+                continue
+
+            self.cells[pos] += 1
+            seeds -= 1
+
+        # Extra turn
+        if pos == self.get_current_player_store(player):
             extra_turn = True
-        
-        # Check if the capture is feasible: last seed in one of my empty cells, opponent cell not empty
-        if (pit + i in self.get_current_player_pits(player)) & (self.cells[pit + i] == 1) & (self.get_opposite_seeds(pit) != 0):
-            self.cells[self.get_current_player_store(player)] += self.get_opposite_seeds(pit) + 1
-            self.cells[pit + i] = 0
-            self.set_opposite_seeds(pit, 0)
+
+        # Capture
+        if (pos in self.get_current_player_pits(player)
+            and self.cells[pos] == 1
+            and self.get_opposite_seeds(pos) > 0):
+
+            store = self.get_current_player_store(player)
+            opposite = 12 - pos
+
+            self.cells[store] += 1 + self.cells[opposite]
+            self.cells[pos] = 0
+            self.cells[opposite] = 0
             capture = True
 
         return extra_turn, capture
