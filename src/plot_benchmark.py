@@ -2,12 +2,14 @@ import matplotlib.pyplot as plt
 import time
 import io
 import sys
+import os
 
 from benchmark import run_games
 from ai_player import AIPlayer
 from board import Board
 from ai_player import reset_node_count, get_node_count
 
+os.makedirs("img", exist_ok=True)
 N = 200  # number of games
 
 def winrate_experiment():
@@ -41,11 +43,11 @@ def winrate_experiment():
     plt.legend()
     plt.grid()
 
-    plt.savefig("winrate_comparison.png")
+    plt.savefig("img/winrate_comparison.png")
     plt.show()
 
 def time_experiment():
-    depths = [2, 3, 4, 5, 6]
+    depths = [1, 2, 3, 4, 5, 6, 7]
 
     ab_times = []
     mm_times = []
@@ -91,7 +93,7 @@ def time_experiment():
     plt.legend()
     plt.grid()
 
-    plt.savefig("time_comparison.png")
+    plt.savefig("img/time_comparison.png")
     plt.show()
 
 # added node count experiment
@@ -137,7 +139,7 @@ def node_experiment():
     plt.legend()
     plt.grid()
 
-    plt.savefig("node_comparison.png")
+    plt.savefig("img/node_comparison.png")
     plt.show()
     
     
