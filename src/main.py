@@ -2,9 +2,8 @@ from game import Game
 from player import HumanPlayer
 from ai_player import AIPlayer
 
-
 def choose_mode():
-    print("=== KALAH (MANCALA) ===")
+    print("=== KALAHA ===")
     print("1. Human vs Human")
     print("2. Human vs AI")
     print("3. AI vs AI (benchmark)")

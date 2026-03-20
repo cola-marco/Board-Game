@@ -16,7 +16,6 @@ def increment_node_count():
 def get_node_count():
     return NODE_COUNT
 
-
 def evaluate(board: Board, player: int, extra_turn: bool = False, captured: bool = False) -> int:
     opponent = 3 - player
     
@@ -75,8 +74,7 @@ def minimax(board: Board, depth: int, maximizing: bool, player: int, last_extra:
 
 def minimax_ab(board: Board, depth: int, alpha: float, beta: float, maximizing: bool, player: int, last_extra: bool = False, last_captured: bool = False) -> tuple[int, int | None]:
     increment_node_count()
-    
-    """Alpha-Beta Pruning. Optimized for speed using the same logic as Minimax."""
+    # Alpha-Beta Pruning. Optimized for speed using the same logic as Minimax
     if board.is_terminal():
         b = board.copy()
         b.collect_remaining()
@@ -91,7 +89,7 @@ def minimax_ab(board: Board, depth: int, alpha: float, beta: float, maximizing: 
     if not valid_moves:
         return evaluate(board, player, last_extra, last_captured), None
 
-    # Move Ordering: Essential for Alpha-Beta efficiency
+    # Move Ordering
     valid_moves.sort(key=lambda m: board.cells[m], reverse=True)
 
     best_pit = valid_moves[0]

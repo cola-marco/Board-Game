@@ -1,7 +1,6 @@
 from board import Board
 from player import Player
 
-
 class Game:
     def __init__(self, player1: Player, player2: Player):
         self.board = Board()
@@ -12,10 +11,7 @@ class Game:
         self.current = 3 - self.current
 
     def play(self) -> int:
-        """
-        Runs the full game loop.
-        Returns the winner (1, 2, or 0 for draw).
-        """
+        # Runs the full game loop, returns the winner (1, 2, or 0 for draw)
         print("\n=== KALAHA ===\n")
         print(self.board)
         print()
@@ -43,7 +39,7 @@ class Game:
             if not extra_turn:
                 self.switch_player()
 
-        # Game over — collect remaining seeds
+        # Game over: collect remaining seeds
         self.board.collect_remaining()
         print("=== GAME OVER ===")
         print(self.board)

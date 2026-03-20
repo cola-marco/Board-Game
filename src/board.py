@@ -19,7 +19,6 @@ P2_PITS = list(range(7, 13))  # indices 7-12
 P2_STORE = 13
 TOTAL_CELLS = 14
 
-
 class Board:
     def __init__(self):
         self.cells = [SEEDS_PER_PIT] * TOTAL_CELLS
@@ -41,16 +40,14 @@ class Board:
         return 12 - pit
 
     def get_valid_moves(self, player: int) -> list[int]:
-        """Returns pit indices (not pit numbers) with at least 1 seed."""
+        # Returns pit indices (not pit numbers) with at least 1 seed
         return [pit for pit in self.get_pits(player) if self.cells[pit] > 0]
 
     def sow(self, player: int, pit: int) -> tuple[bool, bool]:
         """
-        Sows seeds from the given pit for the given player.
-        Returns (extra_turn, captured):
+        Sows seeds from the given pit for the given player, returns (extra_turn, captured):
             - extra_turn: True if last seed landed in player's store
-            - captured:   True if last seed landed in an empty own pit
-                        (capture is already applied inside this method)
+            - captured: True if last seed landed in an empty own pit (capture is already applied inside this method)
         """
         seeds = self.cells[pit]
         if seeds == 0:
@@ -85,12 +82,12 @@ class Board:
         return False, False
 
     def is_terminal(self) -> bool:
-        """Game ends when all pits of either player are empty."""
+        # Game ends when all pits of either player are empty
         return (all(self.cells[p] == 0 for p in P1_PITS) or
                 all(self.cells[p] == 0 for p in P2_PITS))
 
     def collect_remaining(self):
-        """At end of game, each player collects seeds remaining in their own pits."""
+        # At end of game, each player collects seeds remaining in their own pits
         for p in P1_PITS:
             self.cells[P1_STORE] += self.cells[p]
             self.cells[p] = 0
@@ -99,7 +96,7 @@ class Board:
             self.cells[p] = 0
 
     def get_winner(self) -> int:
-        """Returns 1, 2, or 0 for draw. Call only after collect_remaining()."""
+        # Returns 1, 2, or 0 for draw. (Call only after collect_remaining())
         s1, s2 = self.cells[P1_STORE], self.cells[P2_STORE]
         if s1 > s2:
             return 1

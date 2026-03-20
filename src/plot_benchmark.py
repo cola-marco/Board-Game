@@ -44,7 +44,6 @@ def winrate_experiment():
     plt.savefig("winrate_comparison.png")
     plt.show()
 
-
 def time_experiment():
     depths = [2, 3, 4, 5, 6]
 
@@ -141,7 +140,7 @@ def node_experiment():
     plt.savefig("node_comparison.png")
     plt.show()
     
-
+    
 def main():
     winrate_experiment()
     time_experiment()

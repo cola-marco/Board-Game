@@ -1,6 +1,3 @@
-"""
-benchmark.py — Expanded with swapped AB vs MM tests and precise formatting.
-"""
 import io
 import sys
 import random
@@ -17,7 +14,7 @@ def run_games(p1_depth, p2_depth, p1_ab, p2_ab, n_games=50):
         game = Game(ai1, ai2)
 
         # Diverse openings with 1 random moves
-        for _ in range(1):  # changed from 2 random moves to 1 to have a more similar tree and more stable results
+        for _ in range(1):  # changed from range(2) random moves to range(1) to have a more similar tree and more stable results
             if game.board.is_terminal():
                 break
             valid = game.board.get_valid_moves(game.current)
@@ -38,38 +35,38 @@ def fmt(label1, label2, results, n):
     p1 = results[1]
     p2 = results[2]
     d  = results[0]
-    # Spaziature regolate per matchare l'output richiesto
+    # Spacing regulated to match required output
     return f"  {label1:<25} vs {label2:<25} | P1: {p1:>2}/{n}  P2: {p2:>2}/{n}  Draw: {d:>2}/{n}"
 
 def main():
     N = 200 # increased number of games to have a bigger sample size
-    print(f"=== KALAH BENCHMARK ({N} games per matchup) ===\n")
+    print(f"=== KALAHA BENCHMARK ({N} games per matchup) ===\n")
 
-    # --- Experiment 1 ---
-    print("[ Experiment 1: Alpha-Beta vs Alpha-Beta ]")
+    # Experiment 1
+    print("[Experiment 1: Alpha-Beta vs Alpha-Beta]")
     configs = [(3, 3), (5, 5), (3, 5), (3, 7), (5, 3), (7, 3)]
     for d1, d2 in configs:
         r = run_games(d1, d2, True, True, N)
         print(fmt(f"AB depth={d1}", f"AB depth={d2}", r, N))
 
-    # --- Experiment 2 ---
-    print("\n[ Experiment 2: Alpha-Beta vs Minimax (Equal Depth) ]")
+    # Experiment 2
+    print("\n[Experiment 2: Alpha-Beta vs Minimax (Equal Depth)]")
     depths = [3, 4, 5, 6]
     
-    # Parte A: AB vs MM
+    # Part A: AB vs MM
     for d in depths:
         r = run_games(d, d, True, False, N)
         print(fmt(f"AB depth={d}", f"MM depth={d}", r, N))
     
-    print("\n  -- Swapping P1 and P2 --")
+    print("\n -- Swapping P1 and P2 --")
     
-    # Parte B: MM vs AB (come richiesto)
+    # Part B: MM vs AB (as required)
     for d in depths:
         r = run_games(d, d, False, True, N)
         print(fmt(f"MM depth={d}", f"AB depth={d}", r, N))
 
-    # --- Experiment 3 ---
-    print("\n[ Experiment 3: Speed — average time per move ]")
+    # Experiment 3
+    print("\n[Experiment 3: Speed - average time per move]")
     for use_ab, label in [(True, "Alpha-Beta"), (False, "Minimax  ")]:
         for depth in [3, 5, 7]:
             ai = AIPlayer(1, depth=depth, use_alpha_beta=use_ab)
@@ -86,6 +83,7 @@ def main():
             print(f"  {label} depth={depth}: avg {avg:.4f}s per move")
 
     print("\n=== BENCHMARK DONE ===")
+
 
 if __name__ == "__main__":
     main()
