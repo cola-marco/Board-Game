@@ -23,9 +23,9 @@ python3 main.py
 ```
 
 You’ll be prompted to choose:
-- 1) Human vs Human
-- 2) Human vs AI
-- 3) AI vs AI
+1) Human vs Human
+2) Human vs AI
+3) AI vs AI
 
 ---
 ### 2. Run benchmarks (console output)
