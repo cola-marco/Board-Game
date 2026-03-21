@@ -1,30 +1,199 @@
-\documentclass[12pt]{article}
+\documentclass[a4paper,11pt]{article}
 
-\usepackage[a4paper, margin=2.5cm]{geometry}
-\usepackage{setspace}
-\usepackage{hyperref}
 
-\title{\textbf{Group Declaration}\\
-\vspace{0.3cm}
-02180 - Introduction to Artificial Intelligence\\
-Technical University of Denmark}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
 
-\date{March 2026}
+\setlength{\headwidth}{180mm}
+\fancyhf{}
+\fancyhead[L]{Group 24}
+\fancyhead[R]{}
+\fancyfoot[C]{\thepage}
 
+\usepackage{geometry}
+\geometry{
+  left=15mm,
+  right=15mm,
+  top=20mm,
+  bottom=20mm
+}
+
+\usepackage{rotating}
+\usepackage{graphicx,color,psfrag}
+\usepackage{longtable}
+\usepackage{multirow}
+\usepackage[fleqn]{amsmath}
+\usepackage{breqn}
 \begin{document}
+ 
+ 
+\begin{titlepage}
+\newgeometry{top=45mm, bottom=30mm} % margini verticali più grandi SOLO qui
 
-\maketitle
-\section*{Group number: 24}
-\section*{Group Composition}
+\begin{center}
+\vspace{2cm}
+%\textsc{ Danmarks Tekniske Universitet}\\[1.5cm]
+\includegraphics[width=3cm]{images/Corp_Red_RGB.png}~\\[1cm]
+\vspace{2cm}
+
+\vspace{2cm}
+
+% Title
+\hrule
+\vspace{.5cm}
+{\Large \textbf{Group Declaration} \\
+Introduction to Artificial Intelligence\\
+Course 02180\\
+[1ex]
+\Large }
+
+\vspace{.5cm}
+\hrule
+\vspace{1.5cm}
+
+\textsc{\textbf{Authors}}\\
+\vspace{.5cm}
+
+Michele Berlato - s250437  \\
+Marco Cola - s260201\\
+Alexandros Kouros - s260329 \\
+Mattia Russo - s257370\\
+
+
+\end{center}
+\end{titlepage}
+
+\restoregeometry
+
+\section{Contribution Declaration}
+The work for this project was carried out collaboratively by all group members. The contributions reflect both the implementation work and the corresponding sections in the report, and are summarized below:
+
+\subsection{Implementation Contributions}
+%\subsubsection*{Game Mechanics and Core Logic}
 \begin{itemize}
-    \item \textbf{Marco Cola} (Student ID: s260201)
-    \item \textbf{Michele Berlato} (Student ID: s250437)
-    \item \textbf{Alexandros Kouros} (Student ID: s260329)
-    \item \textbf{Mattia Russo} (Student ID: s257370)
+    \item \textbf{Michele Berlato}
+    \begin{itemize}
+        \item Core game mechanics implementation.
+        \item Board and state representation design.
+        \item Integration of the search framework and game progression logic.
+    \end{itemize}
+
+    \item \textbf{Marco Cola}
+    \begin{itemize}
+        \item Graphs implementation (plot generation and visualization).
+        \item Move-generating procedure implementation.
+        \item Performance optimization and refactoring for efficiency.
+    \end{itemize}
+
+    \item \textbf{Alexandros Kouros}
+    \begin{itemize}
+        \item Minimax and Alpha-Beta search logic implementation.
+        \item Integration of heuristic evaluation within search algorithms.
+        \item Testing of algorithmic configurations and edge cases.
+    \end{itemize}
+
+    \item \textbf{Mattia Russo}
+    \begin{itemize}
+        \item User interaction layer and command-line interface.
+        \item Evaluation function structure and parameterization.
+        \item Development of benchmarking pipelines and automated match simulations.
+    \end{itemize}
 \end{itemize}
 
-\vspace{0.3cm}
-\newpage
+
+\subsection{Benchmarking and Evaluation}
+\begin{itemize}
+    \item \textbf{Mattia Russo}
+    \begin{itemize}
+        \item Terminal-based benchmarking system.
+        \item Execution of benchmarking experiments.
+        \item Computation and collection of performance statistics.
+    \end{itemize}
+
+    \item \textbf{Marco Cola}
+    \begin{itemize}
+        \item Implementation and generation of graphical benchmarks (plots).
+        \item Interpretation and commentary on figures and experimental results and trends.
+    \end{itemize}
+\end{itemize}
+
+
+\subsection{Report Writing Contributions}
+%\subsubsection*{Section-by-Section Breakdown}
+\begin{itemize}
+    \item \textbf{Section 1 - Game Rules:} Michele Berlato
+        \begin{itemize}
+            \item Detailed description of Kalaha rules and gameplay mechanics.
+            \item Explanation of board representation and action semantics.
+        \end{itemize}
+
+    \item \textbf{Section 2 - Game Type:} Alexandros Kouros
+        \begin{itemize}
+            \item Formalization of the game type and structural properties.
+            \item Analysis of its suitability for adversarial search methods.
+        \end{itemize}
+    \item \textbf{Section 3 - Size space:} Marco Cola
+        \begin{itemize}
+            \item Derivation of upper bounds for the state space using combinatorial analysis.
+            \item Discussion of branching factor and computational complexity.
+            \item Analysis of why exhaustive search is computationally infeasible.
+        \end{itemize}
+    \item \textbf{Section 4 - Elements of the game:} Marco Cola
+        \begin{itemize}
+            \item Formal definition of the game as a search problem.
+            \item Specification of core components: initial state, player function, actions, result function, terminal test, and utility.
+            \item Mapping of theoretical concepts to the implemented game model.
+        \end{itemize}
+    \item \textbf{Section 5 - AI states and moves representation:} Mattia Russo
+        \begin{itemize}
+            \item Representation of the game state as a fixed-size vector encoding the board configuration.
+            \item Formalization of move representation as pit indices and their mapping to game actions.
+            \item Description of deterministic state transitions and their role in search.
+        \end{itemize}
+    \item \textbf{Section 6 - Methods \& Algorithms:} Michele Berlato
+        \begin{itemize}
+            \item Explanation of Minimax and Alpha-Beta pruning algorithms.
+            \item Description of recursive evaluation and pruning conditions.
+            \item Construction of illustrative examples of algorithm execution.
+        \end{itemize}
+    \item \textbf{Section 7 - Heuristics and Evaluation functions:} Mattia Russo
+        \begin{itemize}
+            \item Evaluation function design and interpretation of heuristic terms.
+        \end{itemize}
+    \item \textbf{Section 8 - Implemented AI's parameters:} Marco Cola
+        \begin{itemize}
+            \item Definition of configurable AI parameters (depth and algorithm choice).
+            \item Generation and presentation of benchmark figures.
+            \item Analysis and interpretation of performance trends (time, win rate, node count).
+        \end{itemize}
+    \item \textbf{Section 9 - Future work:} Mattia Russo
+        \begin{itemize}
+            \item Identification of potential improvements and extensions.
+        \end{itemize}
+\end{itemize}
+
+
+%\subsection*{Figures and Visual Material}
+%\begin{itemize}
+%    \item \textbf{Figure 1 (Board Representation):} Marco Cola
+%    \item \textbf{Figure 2 (Search Tree Illustration):} Michele Berlato
+%    \item \textbf{Figures 3–5 (Benchmark Graphs):} Mattia Russo
+%\end{itemize}
+
+
+\subsection{Additional Project Materials}
+\begin{itemize}
+    \item \textbf{README File:} Marco Cola
+    \item \textbf{Code Documentation and Inline Comments:} All group members
+    \item \textbf{Repository setup and structure:} Marco Cola, Mattia Russo
+    \item \textbf{Version control management (commits, branching, merging):} Marco Cola, Mattia Russo, Michele Berlato
+    \item \textbf{Testing and Debugging Support:} All group members
+    \item \textbf{Experiment Reproducibility and Code Organization:} Marco Cola, Mattia Russo, Alexandros Kouros
+\end{itemize}
+
+
+\section{Final Approval}
+All authors reviewed, contributed to, and approved the final project and report.
 
 
 \end{document}
