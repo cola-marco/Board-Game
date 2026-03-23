@@ -185,7 +185,7 @@ Utility(s) & \text{if } Terminal-Test(s) \\
 \min_{a\in Actions(s)} V(Result(s,a)) & \text{if the current player is MIN}
 \end{cases}
 \]
-In practice the search tree must be truncated at a finite depth $d$. In that case a heuristic evaluation function $h(s)$, evaluated from the perspective of the $MAX$ player, is used.\\
+In practice the search tree must be truncated at a finite depth $d$. In that case a heuristic evaluation function $h(s)$, evaluated from the perspective of the root player ($MAX$), is used.\\
 \textit{Alpha-Beta pruning} improves the efficiency of Minimax by maintaining two bounds:
 \[
 \alpha = \text{best value found so far for MAX}
