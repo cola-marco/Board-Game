@@ -99,7 +99,7 @@ Because Kalaha fits these criteria, it is highly susceptible to adversarial sear
 
 
 \section{Size space}
-The state space of Kalaha, specifically the popular Kalah(6,4) variant is estimated to be between $10^{13}$ and $10^{15}$. However, when considering the game tree complexity the total number of possible move sequences the figure rises significantly, often cited between $10^{18}$ and $10^{33}$. \\
+The state space of Kalaha, specifically the popular Kalah(6,4) variant is estimated to be between $10^{11}$ and $10^{12}$. However, when considering the game tree complexity, i.e., the total number of possible move sequences, this figure rises significantly and is often cited between $10^{18}$ and $10^{33}$, depending on game length and branching structure. \\
 %proposed section MARCO:
 \subsection*{Approximate state space estimation}
 A rough upper bound for the state space of Kalaha can be obtained by observing that the game contains a fixed number of stones. In the Kalah(6,4) variant there are
@@ -130,10 +130,10 @@ This very large state space makes exhaustive search infeasible, motivating the u
 Specifically:
 \begin{itemize}
     \item \textbf{Depth-Limited Search:} Algorithms like Minimax must stop at a predefined depth to remain computationally feasible, using an evaluation function to estimate the value of non-terminal states.
-    \item \textbf{Efficiency:} The use of Alpha-Beta pruning is mandatory to navigate this space, as it allows the AI to ignore vast branches of the tree that are mathematically proven to be sub-optimal, focusing its resources on the most promising lines of play.
+    \item \textbf{Efficiency:} The use of Alpha-Beta pruning is highly beneficial to navigate this space, as it allows the AI to ignore vast branches of the tree that are mathematically proven to be sub-optimal, focusing its resources on the most promising lines of play.
 \end{itemize}
 %MARCO
-In a typical game state a player can choose between at most six pits, giving an approximate branching factor of $b \approx 6$. If the search depth is $d$, the theoretical complexity of Minimax search is therefore \[O(b^d)\]
+In a typical game state a player can choose between at most six pits, giving an approximate branching factor of $b \approx 6$ in early game. If the search depth is $d$, the theoretical complexity of Minimax search is therefore \[O(b^d)\]
 which quickly becomes infeasible for large depths. For example, with $b=6$ and $d=8$, the number of explored nodes would already exceed $1.6\times10^6$. This motivates the use of Alpha-Beta pruning, which can reduce the effective branching factor and allow deeper search.
 
 
@@ -147,24 +147,24 @@ G = (s_0, Player(s), Action(s), Result(s,a), Terminal-Test(s), Utility(s, p))
 where each component is defined as follows:
 \begin{itemize}
     \item \textbf{Initial state $s_0$:} A board with 12 pits, each containing 4 stones, and 2 empty Kalahs.
-    \item \textbf{Player(s):} Returns the player whose turn it is, the player may move multiple times if the "extra turn" rule is triggered.
+    \item \textbf{Player(s):} Returns the player whose turn it is. In case of extra turns, the same player may appear in consecutive levels; therefore, the Minimax recursion must consider the player returned by $Player(s)$ rather than assuming strict alternation.
     \item \textbf{Action(s):} Selecting any non-empty pit on the current player's side of the board.
     \item \textbf{Result(s,a):} The state resulting from "sowing" the stones from the chosen pit counter-clockwise, including captures and extra turn logic.
     \item \textbf{Terminal-Test(s):} True if all pits on either player's side are empty.
-    \item\textbf{Utility(s,p):} Calculated at the terminal state as the difference between stones in the player's Kalah and the opponent's.
+    \item\textbf{Utility(s):} Calculated at the terminal state as the difference between stones in the player's Kalah and the opponent's. Utility is always evaluated from the perspective of $MAX$.
     \[
-    Utility(s,p) = Store_p(s) - Store_{opp}(s)
+    Utility(s) = Store_{MAX}(s) - Store_{MIN}(s)
     \]
 \end{itemize}
 
 
 \section{AI states and moves representation}
 %MARCO:
-In the implementation the board state is represented as a vector of length 14:
+In the implementation the board state is represented as a vector of length 14 augmented with the player to move:
 \[
-s = (c_0,c_1,\ldots,c_{13})
+s = (c_0, c_1, \ldots, c_{13}, p)
 \]
-where each $c_i$ represents the number of stones contained in pit $i$.
+where each $c_i$ represents the number of stones in pit $i$, and $p \in \{MAX, MIN\}$ indicates the player whose turn it is. \\
 Indices $0-5$ correspond to Player 1 pits, index $6$ to Player 1's store, indices $7-12$ to Player 2 pits and index $13$ to Player 2's store. \\
 %end
 %OLD: Kalaha state is typically represented by a simple linear data structure, such as an array or a vector of integers. Each element in the array corresponds to a pit or a Kalah, and its value represents the number of stones contained within.
@@ -174,7 +174,7 @@ It's not necessary to represent game states as belief states, because Kalaha is 
 
 \section{Methods \& Algorithms}
 For the development of a Kalaha AI, the most appropriate choice among the methods discussed in the course is the Minimax algorithm enhanced with Alpha-Beta pruning. \\
-This selection is justified by the game's nature: as a deterministic, zero-sum game of perfect information, Minimax can theoretically map every possible evolution of the match to find the optimal strategy while the alpha beta pruning allow to ignore branches that are mathematically proven to be worse than previously explored options, allowing to doubles the searchable depth. \\
+This selection is justified by the game's nature: as a deterministic, zero-sum game of perfect information, Minimax can theoretically map every possible evolution of the match to find the optimal strategy while the Alpha-Beta pruning allows ignoring branches that are mathematically proven to be worse than previously explored options, allowing significantly deeper search (up to roughly doubling the effective depth in ideal conditions). \\
 %MARC:
 The value of a state in the \textit{Minimax} framework is defined recursively as
 \[
@@ -185,7 +185,7 @@ Utility(s) & \text{if } Terminal-Test(s) \\
 \min_{a\in Actions(s)} V(Result(s,a)) & \text{if the current player is MIN}
 \end{cases}
 \]
-In practice the search tree must be truncated at a finite depth $d$. In that case a heuristic evaluation function $h(s)$ is used instead of the true utility value. \\
+In practice the search tree must be truncated at a finite depth $d$. In that case a heuristic evaluation function $h(s)$, evaluated from the perspective of the $MAX$ player, is used.\\
 \textit{Alpha-Beta pruning} improves the efficiency of Minimax by maintaining two bounds:
 \[
 \alpha = \text{best value found so far for MAX}
@@ -224,16 +224,16 @@ The algorithm therefore ignores the remaining sub-branches of $n_2$, as they can
 
 \section{Heuristics and Evaluation functions}
 %MARCO:
-For non-terminal states, the AI player utilizes an advanced heuristic evaluation function $h(s, p)$. This function estimates the positional advantage of player $p$ by considering a weighted combination of material count and strategic bonuses:
+For non-terminal states, the AI player utilizes an advanced heuristic evaluation function $h(s)$. This function estimates the positional advantage from the perspective of the $MAX$ player, by considering a weighted combination of material count and strategic bonuses:
 
 \[
-h(s, p) = 20 \cdot \Delta Store + \Delta Pits + Bonus_{extra} + Bonus_{capture}
+h(s) = 20 \cdot \Delta Store + \Delta Pits + Bonus_{extra} + Bonus_{capture}
 \]
 
 Where:
 \begin{itemize}
-    \item \textbf{$\Delta Store$}: The difference between the seeds in player $p$'s store ($Store_p$) and the opponent's store ($Store_{opp}$). This is the primary objective of the game.
-    \item \textbf{$\Delta Pits$}: The difference between the total seeds remaining in $p$'s pits and the opponent's pits. This serves as a measure of potential future points and defensive stability.
+    \item \textbf{$\Delta Store$}: The difference between the seeds in the $MAX$ player's store ($Store_{MAX}$) and the opponent's store ($Store_{MIN}$). This is the primary objective of the game.
+    \item \textbf{$\Delta Pits$}: The difference between the total seeds remaining in the $MAX$ player's pits and the opponent's pits. This serves as a measure of potential future points and defensive stability.
     \item \textbf{$Bonus_{extra}$}: A strategic reward (set to $15$) added if the move leads to an extra turn. This encourages the AI to prioritize move chains that maintain board control.
     \item \textbf{$Bonus_{capture}$}: A tactical reward (set to $10$) added if the move results in a capture.
 \end{itemize}
@@ -283,7 +283,7 @@ As shown in Figure~\ref{fig:time_comparison}, Alpha-Beta pruning consistently re
 \caption{Win rate comparison between Alpha-Beta and Minimax across different depths. Results are averaged over both player roles to eliminate first-player bias.}
 \label{fig:winrate_comparison}
 \end{figure}
-Figure~\ref{fig:winrate_comparison} shows that the win rates of Minimax and Alpha-Beta pruning are overall very similar across all tested depths. This is expected, as Alpha-Beta pruning does not alter the decision-making process of Minimax, but only improves its efficiency by pruning branches that cannot influence the final outcome. Minor differences in win rate are due to stochastic elements in the experimental setup and the finite number of simulated games.
+Figure~\ref{fig:winrate_comparison} shows that the win rates of Minimax and Alpha-Beta pruning are overall very similar across all tested depths. This is expected, as Alpha-Beta pruning does not alter the decision-making process of Minimax, but only improves its efficiency by pruning branches that cannot influence the final outcome. Minor differences in win rate are due to finite sampling and possible tie-breaking effects in the experimental setup and the finite number of simulated games.
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.7\linewidth]{images/node_comparison.png}
